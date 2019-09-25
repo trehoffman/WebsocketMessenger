@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Websocket Messenger</title>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="css/w3.css"/>
+		<link rel="stylesheet" href="css/websocketmessenger.css"/>
+	</head>
+	<body>
+		<div class="top-section">
+			<div class="w3-container">
+				<h3>Websocket Messenger</h1>
+				<div>
+					<input class="connection-string w3-input" placeholder="enter connection string..." list="connectionstringhistory" autofocus />
+					<datalist id="connectionstringhistory"></datalist>
+					<button type="button" class="open w3-button w3-block">Open</button>
+				</div>
+			</div>
+		</div>
+		<div class="middle-section">
+			<ol class="log w3-container w3-margin w3-ol" reversed></ol>
+		</div>
+		<div class="bottom-section">
+			<div class="message-entry w3-container">
+				<textarea class="w3-input w3-border message"></textarea>
+				<button type="button" class="send w3-button w3-block">Send</button>
+			</div>
+		</div>
+		<script src="js/websocketmessenger.js"></script>
+		<script>
+			var websocketmessenger = new WebsocketMessenger();
+		</script>
+	</body>
+</html>

@@ -1,0 +1,20 @@
+html, body {
+    height:100%
+}
+
+.top-section {
+    height:25%;
+}
+
+.middle-section {
+    height:60%;
+    overflow:scroll;
+}
+
+.bottom-section {
+    height:15%;
+}
+
+li:nth-child(odd) {
+    background: lightgrey;
+}
