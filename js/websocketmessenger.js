@@ -97,7 +97,17 @@ function WebsocketMessenger(options) {
     };
 
     me.log = function(message) {
-        me.elements.log.innerHTML = '<li>' + message + '</li>' + me.elements.log.innerHTML;
+        var json;
+        try {
+            json = JSON.parse(message);
+        } catch(err) {
+            json = null;
+        }
+
+        if (json) {
+            message = '<pre>' + JSON.stringify(json, null, 1) + '</pre>'
+        }
+        me.elements.log.innerHTML = '<li><div>' + new Date + '</div>' + message + '</li>' + me.elements.log.innerHTML;
     };
 			
     me.openWebsocket = function() {
@@ -121,7 +131,7 @@ function WebsocketMessenger(options) {
 				
 		me.websocket.onmessage = function(e) {
 		    console.log('websocket message', e);
-		    me.log('websocket message: ' + e.data);
+		    me.log(e.data);
 		};
     };
 			
