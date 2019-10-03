@@ -18,3 +18,7 @@ html, body {
 li:nth-child(odd) {
     background: lightgrey;
 }
+
+.hidden {
+    display:none;
+}

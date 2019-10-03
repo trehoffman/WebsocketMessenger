@@ -11,6 +11,7 @@ function WebsocketMessenger(options) {
         send: document.querySelector('button.send')
     };
     me.connection_string_history = [];
+    me.message_history = [];
     
     me.init = function() {
         me.loadConnectionStringHistory();
@@ -35,7 +36,7 @@ function WebsocketMessenger(options) {
         });
 
         me.elements.send.addEventListener('click', function(e) {
-            console.log(e);
+            console.log('click', e);
             var message = me.elements.message.value.trim();
 
             if (message.length === 0) {
@@ -48,13 +49,46 @@ function WebsocketMessenger(options) {
         });
 
         me.elements.input.addEventListener('keydown', function(e) {
-            console.log(e);
+            console.log('keydown', e);
             if (e.keyCode === 13) {
                 e.preventDefault();
                 me.elements.button.click();
             }
         });
+
+        me.elements.log.addEventListener('click', function(e) {
+            console.log('click', e);
+            var listitem = e.target.closest('li');
+            var index = parseInt(listitem.getAttribute('index'));
+            var message = me.message_history[index];
+            var messagearea = listitem.querySelector('.message-area');
+
+            if (e.target.classList.contains('copy')) {
+                me.copyToClipboard(message.message || '');
+                return;
+            }
+
+            //hide or show message area
+            var accordianindicator = listitem.querySelector('.accordian-indicator');
+            if (messagearea.classList.contains('hidden')) {
+                messagearea.classList.remove('hidden');
+                accordianindicator.innerHTML = '&#8595;'
+            } else {
+                messagearea.classList.add('hidden');
+                accordianindicator.innerHTML = '&#8594;'
+            }
+        });
     };
+
+    me.copyToClipboard = function(message) {
+        var dummy = document.createElement('textarea');
+        document.body.appendChild(dummy);
+        dummy.value = message || '';
+        dummy.select();
+        document.execCommand('copy');
+        window.getSelection().removeAllRanges();
+        document.body.removeChild(dummy);
+    }
 
     me.putConnectionStringHistory = function() {
         var innerHTML = '';
@@ -97,6 +131,12 @@ function WebsocketMessenger(options) {
     };
 
     me.log = function(message) {
+        var timestamp = new Date;
+        var index = (me.message_history.push({
+            timestamp: timestamp,
+            message: message
+        }) - 1);
+
         var json;
         try {
             json = JSON.parse(message);
@@ -105,9 +145,16 @@ function WebsocketMessenger(options) {
         }
 
         if (json) {
-            message = '<pre>' + JSON.stringify(json, null, 1) + '</pre>'
+            message = JSON.stringify(json, null, 1);
         }
-        me.elements.log.innerHTML = '<li><div>' + new Date + '</div>' + message + '</li>' + me.elements.log.innerHTML;
+        me.elements.log.innerHTML = '<li index="' + index + '">'
+            + '<div><span>' + timestamp + '</span>'
+            + '<span><button type="button" class="copy">Copy</button><span>'
+            + '<span class="accordian-indicator">&#8595;</span>'
+            + '</div>'
+            + '<pre class="message-area">' + message + '</pre>'
+            + '</li>' 
+            + me.elements.log.innerHTML;
     };
 			
     me.openWebsocket = function() {
