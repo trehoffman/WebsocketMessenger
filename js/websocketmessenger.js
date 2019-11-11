@@ -8,10 +8,12 @@ function WebsocketMessenger(options) {
 		button: document.querySelector('button.open'),
         log: document.querySelector('.log'),
         message: document.querySelector(".message"),
-        send: document.querySelector('button.send')
+        send: document.querySelector('button.send'),
+        filterText: document.querySelector('input.filter-text')
     };
     me.connection_string_history = [];
     me.message_history = [];
+    me.filter_text = '';
     
     me.init = function() {
         me.loadConnectionStringHistory();
@@ -57,18 +59,20 @@ function WebsocketMessenger(options) {
         });
 
         me.elements.log.addEventListener('click', function(e) {
-            console.log('click', e);
             var listitem = e.target.closest('li');
             var index = parseInt(listitem.getAttribute('index'));
             var message = me.message_history[index];
-            var messagearea = listitem.querySelector('.message-area');
 
             if (e.target.classList.contains('copy')) {
                 me.copyToClipboard(message.message || '');
                 return;
             }
+        });
 
+        me.elements.log.addEventListener('dblclick', function(e) {
             //hide or show message area
+            var listitem = e.target.closest('li');
+            var messagearea = listitem.querySelector('.message-area');
             var accordianindicator = listitem.querySelector('.accordian-indicator');
             if (messagearea.classList.contains('hidden')) {
                 messagearea.classList.remove('hidden');
@@ -77,6 +81,11 @@ function WebsocketMessenger(options) {
                 messagearea.classList.add('hidden');
                 accordianindicator.innerHTML = '&#8594;'
             }
+        });
+
+        me.elements.filterText.addEventListener('keyup', function(e) {
+            me.filter_text = e.target.value;
+            me.filter();
         });
     };
 
@@ -155,6 +164,7 @@ function WebsocketMessenger(options) {
             + '<pre class="message-area">' + message + '</pre>'
             + '</li>' 
             + me.elements.log.innerHTML;
+        me.filter();
     };
 			
     me.openWebsocket = function() {
@@ -186,6 +196,25 @@ function WebsocketMessenger(options) {
         me.websocket.close();
         me.log('websocket closed');
     }
+
+    me.filter = function() {
+        var log_entries = me.elements.log.querySelectorAll('li');
+        for (var i = 0; i < log_entries.length; i++) {
+            var log_entry = log_entries[i];
+            log_entry.classList.remove('hidden');
+        }
+
+        if (me.filter_text.length > 0) {
+            for (var i = 0; i < log_entries.length; i++) {
+                var log_entry = log_entries[i];
+                if (log_entry.innerHTML.toLowerCase().includes(me.filter_text.toLowerCase())) {
+                    log_entry.classList.remove('hidden');
+                } else {
+                    log_entry.classList.add('hidden');
+                }
+            }
+        }
+    };
 
     me.init();
 }

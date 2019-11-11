@@ -10,16 +10,19 @@
 	<body>
 		<div class="top-section w3-container">
 			<div>
-				<h3>Websocket Messenger</h1>
+				<h3>Websocket Messenger</h3>
 				<div>
 					<input class="connection-string w3-input" placeholder="enter connection string..." list="connectionstringhistory" autofocus />
 					<datalist id="connectionstringhistory"></datalist>
 					<button type="button" class="open w3-button w3-block">Open</button>
 				</div>
+				<div>
+					<input class="filter-text w3-input" placeholder="filter" />
+				</div>
 			</div>
 		</div>
-		<div class="middle-section w3-container">
-			<ol class="log w3-margin w3-ol" reversed></ol>
+		<div class="middle-section w3-container w3-margin">
+			<ol class="log w3-ol" reversed></ol>
 		</div>
 		<div class="bottom-section w3-container">
 			<div class="message-entry">
