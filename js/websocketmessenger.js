@@ -44,9 +44,16 @@ function WebsocketMessenger(options) {
             if (message.length === 0) {
                 return;
             }
+
+            if (!me.websocket) {
+                alert('connection not initialized');
+                me.elements.input.focus();
+                return;
+            }
             
             if (me.websocket.readyState > 1) {
                 alert('connection is not ready to communicate');
+                me.elements.input.focus();
                 return;
             }
             
