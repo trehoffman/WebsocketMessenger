@@ -44,8 +44,13 @@ function WebsocketMessenger(options) {
             if (message.length === 0) {
                 return;
             }
-
-            me.websocket.send(message);
+            
+            if (me.websocket.readyState > 1) {
+                alert('connection is not ready to communicate');
+                return;
+            }
+            
+            me.websocket.send(message); 
             me.elements.message.value = "";
             me.elements.message.focus();
         });
