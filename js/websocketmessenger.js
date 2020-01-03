@@ -99,6 +99,11 @@ function WebsocketMessenger(options) {
             me.filter_text = e.target.value;
             me.filter();
         });
+
+        //try to gracefully close websocket before page is unloaded
+        window.onbeforeunload = function() {
+            me.closeWebsocket();
+        }
     };
 
     me.copyToClipboard = function(message) {
